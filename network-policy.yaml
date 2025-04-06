@@ -8,11 +8,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: /results-provider-service
+          - path: /results-provider
             pathType: Prefix
             backend:
               service:
-                name: results-provider-service
+                name: results-provider
                 port:
                   number: 8080
           - path: /

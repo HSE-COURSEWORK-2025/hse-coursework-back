@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: results-provider-service
+  name: results-provider
   namespace: hse-coursework-health
 spec:
   selector:

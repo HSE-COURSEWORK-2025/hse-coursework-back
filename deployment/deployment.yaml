@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: results-provider-app
+  name: results-provier
   labels:
     app: results-provider
 spec:
