@@ -18,3 +18,10 @@ spec:
                 name: results-provider-service
                 port:
                   number: 8080
+          - path: /frontend(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 3000
