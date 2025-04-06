@@ -21,6 +21,7 @@ def custom_generate_unique_id(route: APIRoute):
 
 
 app = FastAPI(
+    root_path="/results-provider-service",
     title=settings.APP_TITLE,
     version=settings.APP_VERSION,
     contact={
@@ -45,6 +46,7 @@ instrumentator = Instrumentator(
 async def startup_event():
     instrumentator.expose(
         app,
+        endpoint="/metrics",
         include_in_schema=False,
         tags=["root"],
     )
