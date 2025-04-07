@@ -21,13 +21,13 @@ class Settings(BaseSettings):
     APP_REDOC_URL: str | None = None
     PRODUCTION: bool = False
 
+    ROOT_PATH: str | None = "/results-provider"
+    PORT: int | None = 8080
+
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
-
-    GOOGLE_CLIENT_ID: str | None = None
-    SECRET_KEY: str | None = None
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
     def assemble_cors_origins(cls, v: str | list[str]) -> str | list[str]:
@@ -38,7 +38,8 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     class Config:
-        env_file = ".env"
+        # env_file = ".env"
+        env_file = ".env.development"
         env_file_encoding = "utf-8"
         case_sensitive = False
         env_nested_delimiter = "__"
