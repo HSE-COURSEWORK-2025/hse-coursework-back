@@ -7,6 +7,7 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.openapi.utils import get_openapi
 
 from app.settings import settings, setup_logging
 from app.api.root import root_router
@@ -36,6 +37,37 @@ app = FastAPI(
     redoc_url=settings.APP_REDOC_URL,
     swagger_ui_oauth2_redirect_url=settings.APP_DOCS_URL + "/oauth2-redirect",
 )
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description="API documentation with Bearer auth",
+        routes=app.routes,
+    )
+
+    # Добавляем сервер с указанием ROOT_PATH
+    if settings.ROOT_PATH:
+        openapi_schema["servers"] = [{"url": settings.ROOT_PATH}]
+
+    openapi_schema["components"]["securitySchemes"] = {
+        "Bearer": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    # Применяем схему безопасности глобально ко всем роутам
+    for path in openapi_schema["paths"]:
+        for method in openapi_schema["paths"][path]:
+            openapi_schema["paths"][path][method]["security"] = [{"Bearer": []}]
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
 
 instrumentator = Instrumentator(
     should_ignore_untemplated=True,
