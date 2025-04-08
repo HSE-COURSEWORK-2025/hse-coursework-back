@@ -1,4 +1,6 @@
 import logging
+import asyncio
+import httpx
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -9,7 +11,6 @@ from starlette.middleware.cors import CORSMiddleware
 from app.settings import settings, setup_logging
 from app.api.root import root_router
 from app.api.v1.router import api_v1_router
-
 
 logger = logging.getLogger(__name__)
 setup_logging()
@@ -67,7 +68,6 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
 
 app.include_router(api_v1_router)
 app.include_router(root_router)

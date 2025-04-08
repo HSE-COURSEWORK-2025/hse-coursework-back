@@ -26,6 +26,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
+    AUTH_API_URL: str | None = "http://auth-api:8081"
+
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
 
