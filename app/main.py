@@ -1,6 +1,4 @@
 import logging
-import asyncio
-import httpx
 
 from prometheus_fastapi_instrumentator import Instrumentator
 
@@ -37,6 +35,7 @@ app = FastAPI(
     redoc_url=settings.APP_REDOC_URL,
     swagger_ui_oauth2_redirect_url=settings.APP_DOCS_URL + "/oauth2-redirect",
 )
+
 
 def custom_openapi():
     if app.openapi_schema:
