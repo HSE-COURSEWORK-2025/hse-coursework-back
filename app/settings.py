@@ -1,7 +1,7 @@
 from pathlib import Path
 import logging
 import secrets
-from pydantic import AnyHttpUrl, validator, EmailStr
+from pydantic import AnyHttpUrl, validator, EmailStr, Extra
 from pydantic_settings import BaseSettings
 
 
@@ -26,7 +26,8 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = secrets.token_urlsafe(32)
 
-    AUTH_API_URL: str | None = "http://auth-api:8081"
+    DOMAIN_NAME: str | None = "http://hse-coursework-health.ru"
+    AUTH_API_URL: str | None = f"{DOMAIN_NAME}:8081"
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     BACKEND_CORS_ORIGINS: list[AnyHttpUrl] = []
@@ -40,15 +41,23 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     class Config:
-        # env_file = ".env"
-        env_file = ".env.development"
+        env_file = ".env"
+        # env_file = ".env.development"
         env_file_encoding = "utf-8"
         case_sensitive = False
         env_nested_delimiter = "__"
-
+        extra = Extra.allow
 
 settings = Settings()
 
+# Логгирование всех настроек после инициализации
+def log_settings(settings_obj):
+    logger = logging.getLogger("settings")
+    logger.info("Loaded settings:")
+    for key, value in settings_obj.model_dump().items():
+        logger.info("  %s = %r", key, value)
+
+log_settings(settings)
 
 def setup_logging():
     logging.basicConfig(
@@ -63,6 +72,3 @@ def setup_logging():
     handler_access = logging.StreamHandler()
     handler_access.setFormatter(logging.Formatter(settings.LOG_ACCESS_FORMAT))
     logging.getLogger("uvicorn.access").handlers = [handler_access]
-
-
-settings = Settings()
